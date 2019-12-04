@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <% include ./partials/head.ejs %>
+  </head>
+  <body>
+    <% include ./partials/navbar.ejs %>
+    <main class="container">
+      <% include ../static/partials/messages.ejs %>
+
+      <% if(!currentUser) { %>
+        <h1>Sign in*</h1>
+
+        <form action="/users/sign_in" method="post">
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+            <small class="text-muted" id="emailHelp">email address must be a valid address</small>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" name="password" aria-describedby="passwordHelp" placeholder="Enter password">
+            <small class="text-muted" id="passwordHelp">password must match confirmation below</small>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Sign in</button>
+        </form>
+        
+        <h6>*If you do not have an account, you can sign up for one here <a href="/users/sign_up" class="btn btn-primary btn-sm">Sign up</a></h6>
+      <% } %>
+
+      <% if(currentUser) { %>
+        <ul class="list-group">
+          <% users.forEach((user) => { %>
+            <% if(user.email != currentUser.email) { %>
+              <li class="list-group-item">
+                <%= user.email %>
+                <form action="" method="POST" class="form-inline">
+                  <div class="form-group mx-sm-3 mb-2">
+                    <textarea placeholder="firestore credits" rows="1" class="form-control" name="firestore_credits"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-outline-warning">Send Firestore</button>
+                </form>
+                <form action="/users/update" method="POST" class="form-inline">
+                  <div class="form-group mx-sm-3 mb-2">
+                    <input type="hidden" name="recevierId" value="<%= user.id %>" >
+                    <textarea placeholder="database credits" rows="1" class="form-control" name="db_amt_sent"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-outline-primary">Send Database</button>
+                </form>
+              </li>
+            <% } %>
+          <% }) %>
+        </ul>
+      <% } %>
+
+    </main>
+
+    <% include ./partials/baseScripts.ejs %>
+  </body>
+  <footer></footer>
